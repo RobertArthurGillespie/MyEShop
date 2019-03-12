@@ -8,7 +8,7 @@ using MyEShop.Core.Models;
 
 namespace MyEShop.DataAccess.InMemory
 {
-    public class InMemoryRepository<T>:BaseEntity
+    public class InMemoryRepository<T> where T:BaseEntity
     {
         ObjectCache cache = MemoryCache.Default;
         List<T> items;
@@ -58,10 +58,7 @@ namespace MyEShop.DataAccess.InMemory
             }
         }
 
-        public void Delete(string id)
-        {
-            T tToDelete = items.Find(i => i.ID == t.id);
-        }
+       
 
         public IQueryable<T> Collection()
         {
@@ -70,7 +67,7 @@ namespace MyEShop.DataAccess.InMemory
 
         public void Delete(string Id)
         {
-            T tToDelete = items.Find(i => i.ID == t.Id);
+            T tToDelete = items.Find(i => i.ID == Id);
             if (tToDelete != null)
             {
                 items.Remove(tToDelete);

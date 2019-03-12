@@ -44,7 +44,7 @@ namespace MyEShop.WebUI.Controllers
             }
             else
             {
-                context.Insert(product);
+                context.AddItem(product);
                 context.Commit();
 
                 return RedirectToAction("Index");
@@ -63,7 +63,7 @@ namespace MyEShop.WebUI.Controllers
                 ProductManagerViewModel viewModel = new ProductManagerViewModel();
                 viewModel.Product = product;
                 viewModel.ProductCategories = productCategories.Collection();
-                return View(product);
+                return View(viewModel);
             }
         }
 
