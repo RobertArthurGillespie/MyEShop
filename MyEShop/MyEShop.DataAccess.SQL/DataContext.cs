@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyEShop.DataAccess.SQL
 {
-    class DataContext:DbContext
+    public class DataContext:DbContext
     {
         public DataContext() : base("DefaultConnection")
         {
