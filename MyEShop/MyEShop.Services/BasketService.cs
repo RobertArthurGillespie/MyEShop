@@ -23,6 +23,20 @@ namespace MyEShop.Services
             this.basketContext = BasketContext;
         }
 
+        private Basket CreateNewBasket(HttpContextBase httpContext)
+        {
+            Basket basket = new Basket();
+            basketContext.AddItem(basket);
+            basketContext.Commit();
+
+            HttpCookie cookie = new HttpCookie(BasketSessionName);
+            cookie.Value = basket.ID;
+            cookie.Expires = DateTime.Now.AddDays(1);
+            httpContext.Response.Cookies.Add(cookie);
+
+            return basket;
+        }
+
         private Basket GetBasket(HttpContextBase httpContext, bool createIfNull)
         {
             HttpCookie cookie = httpContext.Request.Cookies.Get(BasketSessionName);
@@ -54,19 +68,6 @@ namespace MyEShop.Services
             return basket;
         }
 
-        private Basket CreateNewBasket(HttpContextBase httpContext)
-        {
-            Basket basket = new Basket();
-            basketContext.AddItem(basket);
-            basketContext.Commit();
-
-            HttpCookie cookie = new HttpCookie(BasketSessionName);
-            cookie.Value = basket.ID;
-            cookie.Expires = DateTime.Now.AddDays(1);
-            httpContext.Response.Cookies.Add(cookie);
-
-            return basket;
-        }
 
         public void AddToBasket(HttpContextBase httpContext, string productId)
         {
@@ -91,6 +92,9 @@ namespace MyEShop.Services
 
             basketContext.Commit();
         }
+
+        
+        
 
         public void RemoveFromBasket(HttpContextBase httpContext, string itemId)
         {

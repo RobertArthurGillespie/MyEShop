@@ -9,7 +9,7 @@ using MyEShop.WebUI.Controllers;
 
 namespace MyEShop.WebUI.Tests.Controllers
 {
-/*    [TestClass]
+    /*[TestClass]
     public class HomeControllerTest
     {
         [TestMethod]
@@ -23,6 +23,8 @@ namespace MyEShop.WebUI.Tests.Controllers
 
             // Assert
             Assert.IsNotNull(result);
+
+            Assert.IsTrue(1 == 1);
         }
 
         [TestMethod]
