@@ -83,6 +83,9 @@
     <Reference Include="System.Net.Http.WebRequest" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\BasketControllerTest.cs" />
+    <Compile Include="Mocks\MockContext.cs" />
+    <Compile Include="Mocks\MockHttpContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
@@ -93,6 +96,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyEShop.Core\MyEShop.Core.csproj">
+      <Project>{E21D359E-4FB3-4451-9ECB-962AF9864017}</Project>
+      <Name>MyEShop.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyEShop.Services\MyEShop.Services.csproj">
+      <Project>{75BBD1F8-1122-4B1E-9CA5-4ECA7A68AEE7}</Project>
+      <Name>MyEShop.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyEShop.WebUI\MyEShop.WebUI.csproj">
       <Project>{9DBED937-E058-4749-8E37-B790203FA997}</Project>
       <Name>MyEShop.WebUI</Name>
