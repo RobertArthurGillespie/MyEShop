@@ -20,11 +20,13 @@ namespace MyEShop.WebUI.Tests.Controllers
             //setup
             IRepository<Basket> baskets = new MockContext<Basket>();
             IRepository<Product> products = new MockContext<Product>();
+            IRepository<Order> orders = new MockContext<Order>();
 
             var httpContext = new MockHttpContext();
 
             IBasketService basketService = new BasketService(products, baskets);
-            var controller = new BasketController(basketService);
+            IOrderService orderService = new OrderService(orders);
+            var controller = new BasketController(basketService, orderService);
             controller.ControllerContext = new System.Web.Mvc.ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
             
             //Act
@@ -48,6 +50,7 @@ namespace MyEShop.WebUI.Tests.Controllers
         {
             IRepository<Basket> baskets = new MockContext<Basket>();
             IRepository<Product> products = new MockContext<Product>();
+            IRepository<Order> orders = new MockContext<Order>();
 
             products.AddItem(new Product() { ID = "1", Price = 10.00m });
             products.AddItem(new Product() { ID = "2", Price = 5.00m });
@@ -58,8 +61,8 @@ namespace MyEShop.WebUI.Tests.Controllers
             baskets.AddItem(basket);
 
             IBasketService basketService = new BasketService(products, baskets);
-
-            var controller = new BasketController(basketService);
+            IOrderService orderService = new OrderService(orders);
+            var controller = new BasketController(basketService, orderService);
 
             var httpContext = new MockHttpContext();
             httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceBasket") { Value = basket.ID });
@@ -70,6 +73,46 @@ namespace MyEShop.WebUI.Tests.Controllers
 
             Assert.AreEqual(3, basketSummary.BasketCount);
             Assert.AreEqual(25.00m, basketSummary.BasketTotal);
+        }
+
+        [TestMethod]
+        public void CanCheckoutAndCreateorder()
+        {
+            IRepository<Product> products = new MockContext<Product>();
+            products.AddItem(new Product() { ID = "1", Price = 10.00m });
+            products.AddItem(new Product() { ID = "2", Price = 5.00m });
+
+            IRepository<Basket> baskets = new MockContext<Basket>();
+            Basket basket = new Basket();
+            basket.BasketItems.Add(new BasketItem() { ProductId = "1", Quantity = 2, BasketId = basket.ID });
+            basket.BasketItems.Add(new BasketItem() { ProductId = "1", Quantity = 1, BasketId = basket.ID });
+
+            baskets.AddItem(basket);
+
+            IBasketService basketService = new BasketService(products, baskets);
+
+            IRepository<Order> orders = new MockContext<Order>();
+            IOrderService orderService = new OrderService(orders);
+
+            var controller = new BasketController(basketService, orderService);
+            var httpContext = new MockHttpContext();
+            httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceBasket")
+            {
+                Value = basket.ID
+            });
+
+            controller.ControllerContext = new ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
+
+            //Act
+            Order order = new Order();
+            controller.Checkout(order);
+
+            //Assert
+            Assert.AreEqual(2, order.OrderItems.Count);
+            Assert.AreEqual(0, basket.BasketItems.Count);
+
+            Order orderInRep = orders.Find(order.ID);
+            Assert.AreEqual(2, orderInRep.OrderItems.Count);
         }
     }
 }
